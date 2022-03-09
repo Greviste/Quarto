@@ -1,0 +1,24 @@
+Quarto
+
+Modeles 3D
+
+class piece
+4 charactéristiques booléennes  -->  enum à base de flags?
+
+class plateau
+tableau 16 cases
+
+game class
+menu
+-rejouer
+-jouer contre un joueur
+-ia
+(niveau difficulté => ia ou mode de jeu)
+tour
+-détection de victoire
+-choix de la pièce de l'adversaire
+-position de la pièce
+
+Rendu
+-console
+-sdl
