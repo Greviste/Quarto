@@ -12,7 +12,6 @@ public class StatusText : MonoBehaviour
     {
         text = GetComponent<Text>();
         if (!director) throw new System.ArgumentNullException("Director not set!");
-        director.Victory += HandleVictory;
     }
 
     void Update()
@@ -20,7 +19,7 @@ public class StatusText : MonoBehaviour
         text.text = "Player " + director.ActivePlayer + " : " + (director.IsInSelection ? "Select piece for other player" : "Select where to place piece");
     }
 
-    void HandleVictory(int winner)
+    public void HandleVictory(int winner)
     {
         text.text = "Player " + winner + " win!!!!!!!!!!!!!!!!!!!!!!!";
         enabled = false;

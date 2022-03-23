@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
+[System.Serializable]
+public class IntEvent : UnityEvent<int> { }
 
 public class GameDirector : MonoBehaviour
 {
     private PieceSelector selectedPiece = null;
     private Game game = new Game();
     int player = 0;
+    bool locked = true;
+    public IntEvent Victory = new IntEvent();
 
     public int ActivePlayer
     {
@@ -18,9 +25,19 @@ public class GameDirector : MonoBehaviour
         get { return selectedPiece == null; }
     }
 
+    public void Unlock()
+    {
+        locked = false;
+    }
+
+    public void EnableAi()
+    {
+        Debug.Log("Enable AI here");
+    }
+
     public void Clicked(CaseSelector c)
     {
-        if (!enabled) return;
+        if (locked) return;
         if (!selectedPiece) return;
         if (!game.PutPiece(c.x, c.y, selectedPiece.type)) return;
 
@@ -30,14 +47,14 @@ public class GameDirector : MonoBehaviour
         selectedPiece = null;
         if (game.CheckWin())
         {
-            Victory(ActivePlayer);
-            enabled = false;
+            Victory.Invoke(ActivePlayer);
+            locked = true;
         }
     }
 
     public void Clicked(PieceSelector p)
     {
-        if (!enabled) return;
+        if (locked) return;
         if (selectedPiece) return;
 
         selectedPiece = p;
@@ -49,6 +66,8 @@ public class GameDirector : MonoBehaviour
         selectedPiece.enabled = false;
     }
 
-    public delegate void VictoryEvent(int victor);
-    public event VictoryEvent Victory;
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
