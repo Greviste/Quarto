@@ -32,12 +32,17 @@ public class GameDirector : MonoBehaviour
     public void Unlock()
     {
         locked = false;
+        if(player == iaPlayer)
+        {
+            var pieces = FindObjectsOfType<PieceSelector>();
+            HandlePieceClick(pieces[Random.Range(0, pieces.Length)]);
+        }
     }
 
     public void EnableAi()
     {
         ia = new IA(3, game);
-        iaPlayer = 1;
+        iaPlayer = Random.Range(0,2);
     }
 
     public void Clicked(CaseSelector c)
@@ -108,12 +113,10 @@ public class GameDirector : MonoBehaviour
                         break;
                     }
                 }
-                Debug.Log(ia.getPieceToPlay());
                 foreach (PieceSelector p in FindObjectsOfType<PieceSelector>())
                 {
                     if (p.type == ia.getPieceToPlay())
                     {
-                        Debug.Log(p.type);
                         HandlePieceClick(p);
                         break;
                     }
