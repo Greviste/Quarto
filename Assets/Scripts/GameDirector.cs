@@ -10,7 +10,7 @@ public class IntEvent : UnityEvent<int> { }
 
 public class GameDirector : MonoBehaviour
 {
-    private PieceSelector selectedPiece = null;
+    public PieceSelector selectedPiece = null;
     private Game game = new Game();
     private IA ia = null;
     private int iaPlayer = -1;
@@ -79,7 +79,7 @@ public class GameDirector : MonoBehaviour
         if (selectedPiece) return;
         MoveTo mt = p.gameObject.AddComponent<MoveTo>();
         mt.duration = 0.1f;
-        mt.destination = p.transform.position + Vector3.up * 0.1f;
+        mt.destination = p.transform.position + Vector3.up * 0.3f;
         selectedPiece = p;
         selectedPiece.enabled = false;
         player = 1 - player;
@@ -99,7 +99,11 @@ public class GameDirector : MonoBehaviour
     {
         if(player == iaPlayer && selectedPiece)
         {
-            if (iaThread == null) iaThread = new Thread(RunAi);
+            if (iaThread == null)
+            {
+                iaThread = new Thread(RunAi);
+                iaThread.Start();
+            }
             if (!iaThread.IsAlive)
             {
                 iaThread = null;
@@ -113,12 +117,33 @@ public class GameDirector : MonoBehaviour
                         break;
                     }
                 }
+                if(selectedPiece != null)
+                {
+                    Debug.LogWarning("No proper case found! Using fallback.");
+                    foreach (CaseSelector c in FindObjectsOfType<CaseSelector>())
+                    {
+                        HandleCaseClick(c);
+                        if(selectedPiece == null) break;
+                    }
+                }
                 foreach (PieceSelector p in FindObjectsOfType<PieceSelector>())
                 {
-                    if (p.type == ia.getPieceToPlay())
+                    if (p.enabled && p.type == ia.getPieceToPlay())
                     {
                         HandlePieceClick(p);
                         break;
+                    }
+                }
+                if(selectedPiece == null)
+                {
+                    Debug.LogWarning("No proper piece found! Using fallback.");
+                    foreach (PieceSelector p in FindObjectsOfType<PieceSelector>())
+                    {
+                        if (p.enabled)
+                        {
+                            HandlePieceClick(p);
+                            break;
+                        }
                     }
                 }
             }
