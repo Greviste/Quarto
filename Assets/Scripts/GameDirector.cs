@@ -41,9 +41,15 @@ public class GameDirector : MonoBehaviour
         if (!selectedPiece) return;
         if (!game.PutPiece(c.x, c.y, selectedPiece.type)) return;
 
+        // MoveTo mt = selectedPiece.gameObject.AddComponent<MoveTo>();
+        selectedPiece.gameObject.transform.SetParent(c.transform);
         MoveTo mt = selectedPiece.gameObject.AddComponent<MoveTo>();
+        mt.SetCoordSystem(MoveTo.CoordSystem.LOCAL);
         mt.duration = 1;
-        mt.destination = c.transform.position + selectedPiece.offset;
+
+        Vector3 scale = c.transform.localScale;
+        Vector3 targetPos = Vector3.Scale(selectedPiece.offset, new Vector3(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z));
+        mt.destination = targetPos;
         selectedPiece = null;
         if (game.CheckWin())
         {

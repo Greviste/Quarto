@@ -18,4 +18,20 @@ public class PieceSelector : MonoBehaviour
         if (!enabled) return;
         director.Clicked(this);
     }
+
+    void OnMouseEnter()
+    {
+        if (transform.parent != null)
+        {
+            transform.parent.GetComponent<CaseSelector>().OnMouseEnter();
+        }
+    }
+
+    void OnMouseExit()
+    {
+        if (transform.parent != null)
+        {
+            transform.parent.GetComponent<CaseSelector>().OnMouseExit();
+        }
+    }
 }
